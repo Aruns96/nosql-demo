@@ -20,13 +20,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  // User.findById('65699d0c5bbe97f1795c13e9')
-  //   .then(user => {
-  //     req.user = new User(user.name,user.email,user.cart,user._id);
-  //     next();
-  //   })
-  //   .catch(err => console.log(err));
-  next()
+  User.findById('656b0c3ba7614cef089981f7')
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
+  
 });
 
  app.use('/admin', adminRoutes);
@@ -35,6 +35,19 @@ app.use((req, res, next) => {
 app.use(errorController.get404);
 
 mongoose.connect(process.env.MONGO).then(result=>{
+  User.findOne().then(user=>{
+    if(!user){
+      const user = new User({
+        name:'arun',
+        email:'arun@email.com',
+        cart:{
+          items:[]
+        }
+      });
+      user.save();
+    }
+  })
+  
   app.listen(3000)
 })
 .catch(e=>console.log(e));
